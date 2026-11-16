@@ -54,10 +54,6 @@ java{
 
 dependencies{
     compileOnly(if(mindustryVersion == "be") "Anuken:MindustryBuilds:latest" else "Anuken:Mindustry:$mindustryVersion")
-
-    implementation("com.badlogicgames.gdx-video:gdx-video:${gdxVideoVersion}")
-    implementation("com.badlogicgames.gdx-video:gdx-video-lwjgl3:${gdxVideoVersion}")
-    //implementation("com.badlogicgames.gdx-video:gdx-video-android:${gdxVideoVersion}")
 }
 
 tasks.jar{
