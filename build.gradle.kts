@@ -15,6 +15,7 @@ val mindustryVersion = "v160"
 val isWindows = System.getProperty("os.name").lowercase().contains("windows")
 val sdkRoot: String? = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 val projectName = project.name
+val gdxVideoVersion = "1.3.4"
 
 repositories{
     mavenCentral()
@@ -53,6 +54,10 @@ java{
 
 dependencies{
     compileOnly(if(mindustryVersion == "be") "Anuken:MindustryBuilds:latest" else "Anuken:Mindustry:$mindustryVersion")
+
+    implementation("com.badlogicgames.gdx-video:gdx-video:${gdxVideoVersion}")
+    implementation("com.badlogicgames.gdx-video:gdx-video-lwjgl3:${gdxVideoVersion}")
+    implementation("com.badlogicgames.gdx-video:gdx-video-android:${gdxVideoVersion}")
 }
 
 tasks.jar{
