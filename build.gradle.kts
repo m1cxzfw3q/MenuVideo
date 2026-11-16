@@ -57,7 +57,7 @@ dependencies{
 
     implementation("com.badlogicgames.gdx-video:gdx-video:${gdxVideoVersion}")
     implementation("com.badlogicgames.gdx-video:gdx-video-lwjgl3:${gdxVideoVersion}")
-    implementation("com.badlogicgames.gdx-video:gdx-video-android:${gdxVideoVersion}")
+    //implementation("com.badlogicgames.gdx-video:gdx-video-android:${gdxVideoVersion}")
 }
 
 tasks.jar{
