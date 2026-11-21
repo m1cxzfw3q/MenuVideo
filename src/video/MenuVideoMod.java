@@ -7,6 +7,7 @@ import arc.func.Boolc;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.Reflect;
+import arc.video.FfMpeg;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
 import mindustry.Vars;
@@ -30,6 +31,12 @@ public class MenuVideoMod extends Mod{
             Log.warn("[MenuVideo] fail to loading video file: " + e);
         }
     };
+
+    @Override
+    public void init() {
+        FfMpeg.loadLibraries();
+    }
+
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if(!Vars.dataDirectory.child("video").exists()) Vars.dataDirectory.child("video").mkdirs();
@@ -48,8 +55,11 @@ public class MenuVideoMod extends Mod{
         @Override
         public void render() {
             if(player.isDisposed() || isDisposed()) return;
+            if(!player.isPlaying()) player.play();
+            player.update();
             TextureRegion tex = new TextureRegion(player.getTexture());
             Draw.rect(tex, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+            Draw.flush();
         }
 
         @Override
