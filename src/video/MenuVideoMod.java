@@ -45,7 +45,8 @@ public class MenuVideoMod extends Mod{
                 tab.checkPref("video-enabled", false, f1);
                 tab.textPref("video-path", "");
                 tab.sliderPref("video-volume", 100, 0, 100, m -> m + "%");
-                tab.button("@setting.video-reload.name", f2).tooltip("@setting.video-reload.description");
+                tab.row();
+                tab.button("@setting.video-reload.name", f2).width(100f).tooltip("@setting.video-reload.description");
             });
             f1.get(Core.settings.getBool("video-enabled"));
             f2.run();
