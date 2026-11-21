@@ -15,7 +15,7 @@ val mindustryVersion = "v160"
 val isWindows = System.getProperty("os.name").lowercase().contains("windows")
 val sdkRoot: String? = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 val projectName = project.name
-val gdxVideoVersion = "1.3.4"
+val arcVideoVersion = "1.3.5"
 
 repositories{
     mavenCentral()
@@ -54,6 +54,14 @@ java{
 
 dependencies{
     compileOnly(if(mindustryVersion == "be") "Anuken:MindustryBuilds:latest" else "Anuken:Mindustry:$mindustryVersion")
+
+    implementation(files(
+        "libs/arc-video-${arcVideoVersion}.jar",
+        "libs/arc-video-android-${arcVideoVersion}.jar",
+        "libs/arc-video-desktop-${arcVideoVersion}.jar",
+        "libs/arc-video-sdl-${arcVideoVersion}.jar",
+        "libs/FFmpeg-${arcVideoVersion}.jar"
+    ))
 }
 
 tasks.jar{
