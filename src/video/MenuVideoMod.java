@@ -33,13 +33,11 @@ public class MenuVideoMod extends Mod{
         }
     };
 
-    @Override
-    public void init() {
-        FfMpeg.loadLibraries();
-    }
-
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
+            FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).root.absolutePath());
+            FfMpeg.loadLibraries();
+
             if(!Vars.dataDirectory.child("video").exists()) Vars.dataDirectory.child("video").mkdirs();
             Vars.ui.settings.addCategory("@settings.video-settings", tab -> {
                 tab.checkPref("video-enabled", false, f1);
