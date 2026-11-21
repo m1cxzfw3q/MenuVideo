@@ -19,14 +19,15 @@ import org.jline.utils.Log;
 import java.io.FileNotFoundException;
 
 public class MenuVideoMod extends Mod{
+    boolean loaded = false;
     VideoPlayer player = VideoPlayerCreator.createVideoPlayer();
-    Boolc f1 = b -> Reflect.set(Vars.ui.menufrag, "renderer", b && Vars.dataDirectory.child("video").exists() && Vars.dataDirectory.child("video").child(Core.settings.getString("video-path")).exists() ? new VideoMenuRenderer() : new MenuRenderer());
+    Boolc f1 = b -> Reflect.set(Vars.ui.menufrag, "renderer", b && Vars.dataDirectory.child("video").exists() && Vars.dataDirectory.child("video").child(Core.settings.getString("video-path")).exists() && loaded ? new VideoMenuRenderer() : new MenuRenderer());
     Runnable f2 = () -> {
         String str = Core.settings.getString("video-path");
         if(str.isEmpty()) return;
         Fi file = Vars.dataDirectory.child("video").child(Core.settings.getString("video-path"));
         try {
-            player.load(file);
+            loaded = player.load(file);
         } catch (FileNotFoundException e) {
             Log.warn("[MenuVideo] fail to loading video file: " + e);
         }
@@ -54,7 +55,7 @@ public class MenuVideoMod extends Mod{
     public class VideoMenuRenderer extends MenuRenderer {
         @Override
         public void render() {
-            if(player.isDisposed() || isDisposed()) return;
+            if(player.isDisposed() || isDisposed() || !loaded) return;
             if(!player.isPlaying()) player.play();
             player.update();
             TextureRegion tex = new TextureRegion(player.getTexture());
