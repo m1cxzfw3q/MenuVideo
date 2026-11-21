@@ -21,6 +21,8 @@ public class MenuVideoMod extends Mod{
     VideoPlayer player = VideoPlayerCreator.createVideoPlayer();
     Boolc f1 = b -> Reflect.set(Vars.ui.menufrag, "renderer", b && Vars.dataDirectory.child("video").exists() && Vars.dataDirectory.child("video").child(Core.settings.getString("video-path")).exists() ? new VideoMenuRenderer() : new MenuRenderer());
     Runnable f2 = () -> {
+        String str = Core.settings.getString("video-path");
+        if(str.isEmpty()) return;
         Fi file = Vars.dataDirectory.child("video").child(Core.settings.getString("video-path"));
         try {
             player.load(file);
