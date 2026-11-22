@@ -10,6 +10,7 @@ import arc.graphics.g2d.TextureRegion;
 import arc.util.OS;
 import arc.util.Reflect;
 import arc.video.FfMpeg;
+import arc.video.VideoDecoder;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
 import mindustry.Vars;
@@ -44,7 +45,8 @@ public class MenuVideoMod extends Mod{
 
     @Override
     public void init() {
-        if (!OS.isAndroid) {
+        if ((OS.isWindows && !OS.isARM) || OS.isLinux || OS.isMac) {
+            Log.info("[MenuVideo] FfMpeg = ", FfMpeg.class.getClassLoader(), (FfMpeg.class.getClassLoader() == VideoDecoder.class.getClassLoader() ? "==" : "not"), "VideoDecoder = ", VideoDecoder.class.getClassLoader());
             FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
             FfMpeg.loadLibraries();
             if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
