@@ -46,7 +46,6 @@ public class MenuVideoMod extends Mod{
     @Override
     public void init() {
         if ((OS.isWindows && !OS.isARM) || OS.isLinux || OS.isMac) {
-            Log.info("[MenuVideo] FfMpeg = "+ FfMpeg.class.getClassLoader()+ (FfMpeg.class.getClassLoader() == VideoDecoder.class.getClassLoader() ? "==" : "not")+ "VideoDecoder = ", VideoDecoder.class.getClassLoader());
             FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
             FfMpeg.loadLibraries();
             if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
