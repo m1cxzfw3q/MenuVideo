@@ -3,7 +3,6 @@ package video;
 import arc.Core;
 import arc.Events;
 import arc.files.Fi;
-import arc.files.ZipFi;
 import arc.func.Boolc;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
@@ -43,13 +42,13 @@ public class MenuVideoMod extends Mod{
                 if (!Vars.dataDirectory.child("video").exists()) Vars.dataDirectory.child("video").mkdirs();
                 String libName = mapLibraryName("arc-video-desktop");
                 try (InputStream is = getClass().getClassLoader().getResourceAsStream(libName)) {
-                    Fi file = Vars.dataDirectory.child("cache").child(libName);
-                    if(!file.exists()) file.mkdirs();
+                    Fi file = new Fi(libName);
                     file.write(is, false);
+                    if(!file.exists()) Vars.tree.addFile(Vars.tmpDirectory.path(), file);
                 } catch (IOException ex) {
                     throw new RuntimeException("[MenuVideo] fail to loading native library file: " + ex);
                 }
-                FfMpeg.setLibraryFilePath(Vars.dataDirectory.child("cache").path());
+                FfMpeg.setLibraryFilePath(Vars.tmpDirectory.path());
                 FfMpeg.loadLibraries();
             }
 
