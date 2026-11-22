@@ -20,7 +20,7 @@ import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
 import arc.util.Log;
 
-import java.io.FileNotFoundException;
+import java.io.*;
 
 public class MenuVideoMod extends Mod{
     boolean loaded = false;
@@ -55,8 +55,10 @@ public class MenuVideoMod extends Mod{
             Log.info(libLoader.getClass().getClassLoader());
             try {
                 libLoader.load("arc-video-desktop");
-            } catch (Exception ignored) {}
-            Reflect.set(FfMpeg.class, "loaded", true);
+                Reflect.set(FfMpeg.class, "loaded", true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
         }
     }
