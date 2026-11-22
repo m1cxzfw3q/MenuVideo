@@ -17,7 +17,7 @@ import mindustry.Vars;
 import mindustry.game.EventType;
 import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
-import org.jline.utils.Log;
+import arc.util.Log;
 
 import java.io.FileNotFoundException;
 
