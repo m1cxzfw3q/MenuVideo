@@ -10,7 +10,6 @@ import arc.graphics.g2d.TextureRegion;
 import arc.util.OS;
 import arc.util.Reflect;
 import arc.video.FfMpeg;
-import arc.video.VideoDecoder;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
 import mindustry.Vars;
