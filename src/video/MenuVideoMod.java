@@ -11,6 +11,7 @@ import arc.util.AdvanceSharedLibraryLoader;
 import arc.util.OS;
 import arc.util.Reflect;
 import arc.video.FfMpeg;
+import arc.video.VideoDecoder;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
 import mindustry.Vars;
@@ -36,6 +37,8 @@ public class MenuVideoMod extends Mod{
         if(str.isEmpty()) return;
         Fi file = videoPath.child(Core.settings.getString("video-path"));
         try {
+            Log.info(VideoDecoder.class.getClassLoader());
+            Log.info(VideoDecoder.class.getProtectionDomain().getCodeSource().getLocation());
             loaded = player.load(file);
         } catch (FileNotFoundException e) {
             Log.warn("[MenuVideo] fail to loading video file: " + e);
@@ -49,6 +52,7 @@ public class MenuVideoMod extends Mod{
             String libraryPath = Vars.mods.getMod(this.getClass()).file.path();
             AdvanceSharedLibraryLoader libLoader = libraryPath == null ? new AdvanceSharedLibraryLoader() : new AdvanceSharedLibraryLoader(libraryPath);
 
+            Log.info(libLoader.getClass().getClassLoader());
             try {
                 libLoader.load("arc-video-desktop");
             } catch (Exception ignored) {}
