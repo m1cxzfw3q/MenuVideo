@@ -43,18 +43,15 @@ public class MenuVideoMod extends Mod{
     };
     Intc f3 = vol -> player.setVolume(vol / 100f);
 
-    @Override
-    public void init() {
-        if ((OS.isWindows && !OS.isARM) || OS.isLinux || OS.isMac) {
-            Log.info("[MenuVideo] FfMpeg = ", FfMpeg.class.getClassLoader(), (FfMpeg.class.getClassLoader() == VideoDecoder.class.getClassLoader() ? "==" : "not"), "VideoDecoder = ", VideoDecoder.class.getClassLoader());
-            FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
-            FfMpeg.loadLibraries();
-            if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
-        }
-    }
-
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
+            if ((OS.isWindows && !OS.isARM) || OS.isLinux || OS.isMac) {
+                Log.info("[MenuVideo] FfMpeg = ", FfMpeg.class.getClassLoader(), (FfMpeg.class.getClassLoader() == VideoDecoder.class.getClassLoader() ? "==" : "not"), "VideoDecoder = ", VideoDecoder.class.getClassLoader());
+                FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
+                FfMpeg.loadLibraries();
+                if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
+            }
+
             if (!videoPath.exists()) videoPath.mkdirs();
             player = VideoPlayerCreator.createVideoPlayer();
             Vars.ui.settings.addCategory("@settings.video-settings", tab -> {
