@@ -7,6 +7,7 @@ import arc.func.Boolc;
 import arc.func.Intc;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.util.AdvanceSharedLibraryLoader;
 import arc.util.OS;
 import arc.util.Reflect;
 import arc.video.FfMpeg;
@@ -45,8 +46,13 @@ public class MenuVideoMod extends Mod{
     @Override
     public void init() {
         if ((OS.isWindows && !OS.isARM) || OS.isLinux || OS.isMac) {
-            FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
-            FfMpeg.loadLibraries();
+            String libraryPath = Vars.mods.getMod(this.getClass()).file.path();
+            AdvanceSharedLibraryLoader libLoader = libraryPath == null ? new AdvanceSharedLibraryLoader() : new AdvanceSharedLibraryLoader(libraryPath);
+
+            try {
+                libLoader.load("arc-video-desktop");
+            } catch (Exception ignored) {}
+            Reflect.set(FfMpeg.class, "loaded", true);
             if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
         }
     }
