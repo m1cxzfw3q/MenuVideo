@@ -38,15 +38,9 @@ public class MenuVideoMod extends Mod{
 
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
+            if (!Vars.dataDirectory.child("video").exists()) Vars.dataDirectory.child("video").mkdirs();
             if (!OS.isAndroid) {
-                if (!Vars.dataDirectory.child("video").exists()) Vars.dataDirectory.child("video").mkdirs();
-                String libName = mapLibraryName("arc-video-desktop");
-                try (InputStream is = getClass().getClassLoader().getResourceAsStream(libName)) {
-                    Vars.tmpDirectory.child(libName).write(is, false);
-                } catch (IOException ex) {
-                    throw new RuntimeException("[MenuVideo] fail to loading native library file: " + ex);
-                }
-                FfMpeg.setLibraryFilePath(Vars.tmpDirectory.path());
+                FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
                 FfMpeg.loadLibraries();
             }
 
