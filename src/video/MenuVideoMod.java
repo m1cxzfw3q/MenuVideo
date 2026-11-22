@@ -42,9 +42,7 @@ public class MenuVideoMod extends Mod{
                 if (!Vars.dataDirectory.child("video").exists()) Vars.dataDirectory.child("video").mkdirs();
                 String libName = mapLibraryName("arc-video-desktop");
                 try (InputStream is = getClass().getClassLoader().getResourceAsStream(libName)) {
-                    Fi file = new Fi(libName);
-                    file.write(is, false);
-                    if(!file.exists()) Vars.tree.addFile(Vars.tmpDirectory.path(), file);
+                    Vars.tmpDirectory.child(libName).write(is, false);
                 } catch (IOException ex) {
                     throw new RuntimeException("[MenuVideo] fail to loading native library file: " + ex);
                 }
