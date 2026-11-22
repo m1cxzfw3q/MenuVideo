@@ -4,6 +4,7 @@ import arc.Core;
 import arc.Events;
 import arc.files.Fi;
 import arc.func.Boolc;
+import arc.func.Intc;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.util.OS;
@@ -18,55 +19,51 @@ import mindustry.mod.Mod;
 import org.jline.utils.Log;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 public class MenuVideoMod extends Mod{
     boolean loaded = false;
+    Fi videoPath = Vars.dataDirectory.child("video");
     VideoPlayer player = VideoPlayerCreator.createVideoPlayer();
-    Boolc f1 = b -> Reflect.set(Vars.ui.menufrag, "renderer", b && Vars.dataDirectory.child("video").exists() && Vars.dataDirectory.child("video").child(Core.settings.getString("video-path")).exists() && loaded ? new VideoMenuRenderer() : new MenuRenderer());
+    Boolc f1 = b -> {
+        MenuRenderer renderer = b && videoPath.exists() && loaded ? new VideoMenuRenderer() : new MenuRenderer();
+        if(Reflect.get(Vars.ui.menufrag, "renderer").getClass() != renderer.getClass()){
+            Reflect.set(Vars.ui.menufrag, "renderer", renderer);
+        }
+    };
     Runnable f2 = () -> {
         String str = Core.settings.getString("video-path");
         if(str.isEmpty()) return;
-        Fi file = Vars.dataDirectory.child("video").child(Core.settings.getString("video-path"));
+        Fi file = videoPath.child(Core.settings.getString("video-path"));
         try {
             loaded = player.load(file);
         } catch (FileNotFoundException e) {
             Log.warn("[MenuVideo] fail to loading video file: " + e);
         }
     };
-
+    Intc f3 = vol -> player.setVolume(vol / 100f);
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            if (!Vars.dataDirectory.child("video").exists()) Vars.dataDirectory.child("video").mkdirs();
+            if (!videoPath.exists()) videoPath.mkdirs();
             if (!OS.isAndroid) {
                 FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
                 FfMpeg.loadLibraries();
+                if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
             }
 
             Vars.ui.settings.addCategory("@settings.video-settings", tab -> {
                 tab.checkPref("video-enabled", false, f1);
                 tab.textPref("video-path", "");
-                tab.sliderPref("video-volume", 100, 0, 100, m -> m + "%");
+                tab.sliderPref("video-volume", 100, 0, 100, m -> m + "%", f3);
                 tab.row();
                 tab.button("@setting.video-reload.name", f2).width(100f).tooltip("@setting.video-reload.description");
             });
             f1.get(Core.settings.getBool("video-enabled"));
             f2.run();
+            f3.get(Core.settings.getInt("video-volume"));
         });
     }
 
-    public String mapLibraryName(String libraryName) {
-        if (OS.isWindows) {
-            return libraryName + (OS.is64Bit ? "64.dll" : ".dll");
-        } else if (OS.isLinux) {
-            return "lib" + libraryName + (OS.isARM ? "arm" : "") + (OS.is64Bit ? "64.so" : ".so");
-        } else {
-            return OS.isMac ? "lib" + libraryName + (OS.isARM ? "arm" : "") + (OS.is64Bit ? "64.dylib" : ".dylib") : libraryName;
-        }
-    }
-
-    public class VideoMenuRenderer extends MenuRenderer {
+    private class VideoMenuRenderer extends MenuRenderer {
         @Override
         public void render() {
             if(player.isDisposed() || isDisposed() || !loaded) return;
