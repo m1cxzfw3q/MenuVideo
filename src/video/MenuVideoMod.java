@@ -23,7 +23,7 @@ import java.io.FileNotFoundException;
 public class MenuVideoMod extends Mod{
     boolean loaded = false;
     Fi videoPath = Vars.dataDirectory.child("video");
-    VideoPlayer player = VideoPlayerCreator.createVideoPlayer();
+    VideoPlayer player;
     Boolc f1 = b -> {
         MenuRenderer renderer = b && videoPath.exists() && loaded ? new VideoMenuRenderer() : new MenuRenderer();
         if(Reflect.get(Vars.ui.menufrag, "renderer").getClass() != renderer.getClass()){
@@ -41,15 +41,20 @@ public class MenuVideoMod extends Mod{
         }
     };
     Intc f3 = vol -> player.setVolume(vol / 100f);
+
+    @Override
+    public void init() {
+        if (!OS.isAndroid) {
+            FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
+            FfMpeg.loadLibraries();
+            if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
+        }
+    }
+
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if (!videoPath.exists()) videoPath.mkdirs();
-            if (!OS.isAndroid) {
-                FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
-                FfMpeg.loadLibraries();
-                if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
-            }
-
+            player = VideoPlayerCreator.createVideoPlayer();
             Vars.ui.settings.addCategory("@settings.video-settings", tab -> {
                 tab.checkPref("video-enabled", false, f1);
                 tab.textPref("video-path", "");
