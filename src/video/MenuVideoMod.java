@@ -39,7 +39,10 @@ public class MenuVideoMod extends Mod{
         try {
             loaded = player.load(file);
         } catch (FileNotFoundException e) {
-            Log.warn("[MenuVideo] fail to loading video file: " + e);
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            Log.warn("[MenuVideo] fail to loading video file: " + sw);
         }
     };
     Intc f3 = vol -> player.setVolume(vol / 100f);
