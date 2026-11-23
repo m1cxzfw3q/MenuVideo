@@ -48,14 +48,16 @@ public class MenuVideoMod extends Mod{
     @Override
     public void init() {
         if ((OS.isWindows && !OS.isARM) || OS.isLinux || OS.isMac) {
-            String libraryPath = Vars.mods.getMod(this.getClass()).file.path();
-            AdvanceSharedLibraryLoader libLoader = libraryPath == null ? new AdvanceSharedLibraryLoader() : new AdvanceSharedLibraryLoader(libraryPath);
+            //String libraryPath = Vars.mods.getMod(this.getClass()).file.path();
+            //AdvanceSharedLibraryLoader libLoader = libraryPath == null ? new AdvanceSharedLibraryLoader() : new AdvanceSharedLibraryLoader(libraryPath);
 
             Log.info("osArch: " + OS.osArch);
             Log.info("modDirectory: " + Arrays.toString(Vars.modDirectory.list()));
             try {
-                libLoader.load("arc-video-desktop");
-                Reflect.set(FfMpeg.class, "loaded", true);
+                //libLoader.load("arc-video-desktop");
+                FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
+                FfMpeg.loadLibraries();
+                //Reflect.set(FfMpeg.class, "loaded", true);
             } catch (Exception e) {
                 Log.info("e.toString(): " + e);
                 Log.info("e.getMessage(): " + e.getMessage());
