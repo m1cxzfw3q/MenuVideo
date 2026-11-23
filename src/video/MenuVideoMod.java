@@ -17,6 +17,7 @@ import mindustry.game.EventType;
 import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
 import arc.util.Log;
+import mindustry.ui.dialogs.SettingsMenuDialog;
 
 import java.io.*;
 import java.util.Arrays;
