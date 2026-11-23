@@ -7,11 +7,9 @@ import arc.func.Boolc;
 import arc.func.Intc;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
-import arc.util.AdvanceSharedLibraryLoader;
 import arc.util.OS;
 import arc.util.Reflect;
 import arc.video.FfMpeg;
-import arc.video.VideoDecoder;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
 import mindustry.Vars;
@@ -48,16 +46,9 @@ public class MenuVideoMod extends Mod{
     @Override
     public void init() {
         if ((OS.isWindows && !OS.isARM) || OS.isLinux || OS.isMac) {
-            //String libraryPath = Vars.mods.getMod(this.getClass()).file.path();
-            //AdvanceSharedLibraryLoader libLoader = libraryPath == null ? new AdvanceSharedLibraryLoader() : new AdvanceSharedLibraryLoader(libraryPath);
-
-            Log.info("osArch: " + OS.osArch);
-            Log.info("modDirectory: " + Arrays.toString(Vars.modDirectory.list()));
             try {
-                //libLoader.load("arc-video-desktop");
                 FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
                 FfMpeg.loadLibraries();
-                //Reflect.set(FfMpeg.class, "loaded", true);
             } catch (Exception e) {
                 Log.info("e.toString(): " + e);
                 Log.info("e.getMessage(): " + e.getMessage());
@@ -75,7 +66,7 @@ public class MenuVideoMod extends Mod{
                 tab.textPref("video-path", "");
                 tab.sliderPref("video-volume", 100, 0, 100, m -> m + "%", f3);
                 tab.row();
-                tab.button("@setting.video-reload.name", f2).width(100f).tooltip("@setting.video-reload.description");
+                tab.button("@setting.video-reload.name", f2).width(240f).pad(6f).tooltip("@setting.video-reload.description");
             });
             f1.get(Core.settings.getBool("video-enabled"));
             f2.run();
