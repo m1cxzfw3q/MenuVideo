@@ -21,6 +21,7 @@ import mindustry.mod.Mod;
 import arc.util.Log;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class MenuVideoMod extends Mod{
     boolean loaded = false;
@@ -37,8 +38,6 @@ public class MenuVideoMod extends Mod{
         if(str.isEmpty()) return;
         Fi file = videoPath.child(Core.settings.getString("video-path"));
         try {
-            Log.info(VideoDecoder.class.getClassLoader());
-            Log.info(VideoDecoder.class.getProtectionDomain().getCodeSource().getLocation());
             loaded = player.load(file);
         } catch (FileNotFoundException e) {
             Log.warn("[MenuVideo] fail to loading video file: " + e);
@@ -52,12 +51,14 @@ public class MenuVideoMod extends Mod{
             String libraryPath = Vars.mods.getMod(this.getClass()).file.path();
             AdvanceSharedLibraryLoader libLoader = libraryPath == null ? new AdvanceSharedLibraryLoader() : new AdvanceSharedLibraryLoader(libraryPath);
 
-            Log.info(libLoader.getClass().getClassLoader());
+            Log.info("osArch: " + OS.osArch);
+            Log.info("modDirectory: " + Arrays.toString(Vars.modDirectory.list()));
             try {
                 libLoader.load("arc-video-desktop");
                 Reflect.set(FfMpeg.class, "loaded", true);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.info("e.toString(): " + e);
+                Log.info("e.getMessage(): " + e.getMessage());
             }
             if(!FfMpeg.isLoaded()) throw new RuntimeException("[MenuVideo] fail to loading native library.");
         }
