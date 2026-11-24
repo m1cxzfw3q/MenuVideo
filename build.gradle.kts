@@ -59,7 +59,7 @@ dependencies{
         "libs/arc-video-${arcVideoVersion}.jar",
         "libs/arc-video-android-${arcVideoVersion}.jar",
         "libs/arc-video-desktop-${arcVideoVersion}.jar",
-        "libs/arc-video-sdl-${arcVideoVersion}.jar",
+        "libs/arc-video-sdl3-${arcVideoVersion}.jar",
     ))
 }
 

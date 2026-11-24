@@ -1,5 +1,6 @@
 package video;
 
+import arc.ApplicationListener;
 import arc.Core;
 import arc.Events;
 import arc.files.Fi;
@@ -14,11 +15,13 @@ import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
 import mindustry.Vars;
 import mindustry.game.EventType;
+import mindustry.gen.Musics;
 import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
 import arc.util.Log;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 
 public class MenuVideoMod extends Mod{
     boolean loaded = false;
@@ -44,6 +47,7 @@ public class MenuVideoMod extends Mod{
         }
     };
     Intc f3 = vol -> player.setVolume(vol / 100f);
+    Class sdl3AudioClazz;
 
     @Override
     public void init() {
@@ -62,28 +66,40 @@ public class MenuVideoMod extends Mod{
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if (!videoPath.exists()) videoPath.mkdirs();
+            try {
+                sdl3AudioClazz = Class.forName("arc.backend.sdl.audio.OpenALSdl3Audio", true, Vars.mods.mainLoader());
+                Core.audio = (arc.audio.Audio) sdl3AudioClazz.getConstructor().newInstance();
+            } catch (Exception ignored) {}
             player = VideoPlayerCreator.createVideoPlayer();
+            player.setLooping(true);
             Vars.ui.settings.addCategory("@settings.video-settings", tab -> {
                 tab.checkPref("video-enabled", false, f1);
                 tab.textPref("video-path", "");
                 tab.sliderPref("video-volume", 100, 0, 100, m -> m + "%", f3);
-                tab.row();
-                tab.button("@setting.video-reload.name", f2).width(240f).pad(6f).tooltip("@setting.video-reload.description");
             });
+            Vars.ui.menufrag.addButton("@video-reload", f2);
             f1.get(Core.settings.getBool("video-enabled"));
             f2.run();
             f3.get(Core.settings.getInt("video-volume"));
+            Core.app.addListener(new ApplicationListener() {
+                @Override
+                public void update() {
+                    if(Vars.control.sound.getCurrent() == Musics.menu && Core.settings.getBool("video-enabled")) Vars.control.sound.keepSilent();
+                }
+            });
         });
     }
 
     private class VideoMenuRenderer extends MenuRenderer {
+        public VideoMenuRenderer() {
+        }
         @Override
         public void render() {
             if(player.isDisposed() || isDisposed() || !loaded) return;
             if(!player.isPlaying()) player.play();
             player.update();
             TextureRegion tex = new TextureRegion(player.getTexture());
-            Draw.rect(tex, 0, 0, Core.graphics.getWidth(), Core.graphics.getHeight());
+            Draw.rect(tex, Core.graphics.getWidth() / 2f, Core.graphics.getHeight() / 2f, Core.graphics.getWidth(), Core.graphics.getHeight());
             Draw.flush();
         }
 
