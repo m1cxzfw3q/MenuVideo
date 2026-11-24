@@ -1,6 +1,5 @@
 package video;
 
-import arc.ApplicationListener;
 import arc.Core;
 import arc.Events;
 import arc.files.Fi;
@@ -8,20 +7,21 @@ import arc.func.Boolc;
 import arc.func.Intc;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
+import arc.math.Mathf;
 import arc.util.OS;
 import arc.util.Reflect;
+import arc.util.Time;
 import arc.video.FfMpeg;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
 import mindustry.Vars;
+import mindustry.audio.SoundControl;
 import mindustry.game.EventType;
-import mindustry.gen.Musics;
 import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
 import arc.util.Log;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 
 public class MenuVideoMod extends Mod{
     boolean loaded = false;
@@ -66,6 +66,7 @@ public class MenuVideoMod extends Mod{
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if (!videoPath.exists()) videoPath.mkdirs();
             player = VideoPlayerCreator.createVideoPlayer();
+            Vars.control.sound = new VideoSoundControl();
             player.setLooping(true);
             Vars.ui.settings.addCategory("@settings.video-settings", tab -> {
                 tab.checkPref("video-enabled", false, f1);
@@ -76,12 +77,6 @@ public class MenuVideoMod extends Mod{
             f1.get(Core.settings.getBool("video-enabled"));
             f2.run();
             f3.get(Core.settings.getInt("video-volume"));
-            Core.app.addListener(new ApplicationListener() {
-                @Override
-                public void update() {
-                    if(Vars.control.sound.getCurrent() == Musics.menu && Core.settings.getBool("video-enabled")) Vars.control.sound.keepSilent();
-                }
-            });
         });
     }
 
@@ -101,6 +96,17 @@ public class MenuVideoMod extends Mod{
         @Override
         public void dispose() {
             player.dispose();
+        }
+    }
+
+    private static class VideoSoundControl extends SoundControl {
+        @Override
+        public void update() {
+            if (!Core.settings.getBool("video-enabled")) super.update();
+            else {
+                fade = Mathf.clamp(fade - Time.delta / foutTime);
+                if(this.fade <= 0.01F)stop();
+            }
         }
     }
 }
