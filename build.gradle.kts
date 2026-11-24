@@ -16,7 +16,6 @@ val isWindows = System.getProperty("os.name").lowercase().contains("windows")
 val sdkRoot: String? = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
 val projectName = project.name
 val arcVideoVersion = "1.3.5-SNAPSHOT"
-val useSdl3 = false
 
 repositories{
     mavenCentral()
@@ -62,15 +61,9 @@ dependencies{
         "libs/arc-video-${arcVideoVersion}.jar",
         "libs/arc-video-android-${arcVideoVersion}.jar",
         "libs/arc-video-desktop-${arcVideoVersion}.jar",
-        "libs/arc-video-${if (useSdl3) "sdl3" else "sdl"}-${arcVideoVersion}.jar",
+        "libs/arc-video-sdl-${arcVideoVersion}.jar",
     ))
-    if(useSdl3){
-        implementation("com.badlogicgames.jlayer:jlayer:1.0.1-gdx")
-        implementation("org.jcraft:jorbis:0.0.17")
-        implementation("org.lwjgl:lwjgl-openal:3.4.2")
-    } else {
-        implementation("com.github.nwaldispuehl:java-lame:v3.98.4")
-    }
+    implementation("com.github.nwaldispuehl:java-lame:v3.98.4")
 }
 
 tasks.jar{
