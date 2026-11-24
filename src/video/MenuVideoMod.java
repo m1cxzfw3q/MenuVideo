@@ -105,7 +105,10 @@ public class MenuVideoMod extends Mod{
             if (!Core.settings.getBool("video-enabled")) super.update();
             else {
                 fade = Mathf.clamp(fade - Time.delta / foutTime);
-                if(this.fade <= 0.01F)stop();
+                if (current != null) {
+                    current.setVolume(fade * volumeMultiplier());
+                }
+                if(fade <= 0.01f)stop();
             }
         }
     }
