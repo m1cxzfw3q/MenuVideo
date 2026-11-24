@@ -47,7 +47,6 @@ public class MenuVideoMod extends Mod{
         }
     };
     Intc f3 = vol -> player.setVolume(vol / 100f);
-    Class sdl3AudioClazz;
 
     @Override
     public void init() {
@@ -66,10 +65,6 @@ public class MenuVideoMod extends Mod{
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if (!videoPath.exists()) videoPath.mkdirs();
-            try {
-                sdl3AudioClazz = Class.forName("arc.backend.sdl.audio.OpenALSdl3Audio", true, Vars.mods.mainLoader());
-                Core.audio = (arc.audio.Audio) sdl3AudioClazz.getConstructor().newInstance();
-            } catch (Exception ignored) {}
             player = VideoPlayerCreator.createVideoPlayer();
             player.setLooping(true);
             Vars.ui.settings.addCategory("@settings.video-settings", tab -> {
