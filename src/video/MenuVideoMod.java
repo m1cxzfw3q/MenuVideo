@@ -2,6 +2,7 @@ package video;
 
 import arc.Core;
 import arc.Events;
+import arc.audio.Audio;
 import arc.files.Fi;
 import arc.func.Boolc;
 import arc.func.Intc;
@@ -11,6 +12,7 @@ import arc.math.Mathf;
 import arc.util.OS;
 import arc.util.Reflect;
 import arc.util.Time;
+import arc.util.reflect.ClassReflection;
 import arc.video.FfMpeg;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
@@ -65,6 +67,15 @@ public class MenuVideoMod extends Mod{
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if (!videoPath.exists()) videoPath.mkdirs();
+            try {
+                Core.audio = (Audio) Class.forName("arc.backend.sdl.audio.OpenALSdlAudio", true, Vars.mods.mainLoader()).getConstructor().newInstance();
+            } catch(Exception ignored) {
+                try {
+                    Core.audio = (Audio) Class.forName("arc.backend.sdl.audio.OpenALSdl3Audio", true, Vars.mods.mainLoader()).getConstructor().newInstance();
+                } catch (Exception ex) {
+                    throw new RuntimeException("[MenuVideo] fail to get sdl audio.", ex);
+                }
+            }
             player = VideoPlayerCreator.createVideoPlayer();
             Vars.control.sound = new VideoSoundControl();
             player.setLooping(true);
