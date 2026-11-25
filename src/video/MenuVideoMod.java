@@ -2,17 +2,13 @@ package video;
 
 import arc.Core;
 import arc.Events;
-import arc.audio.Audio;
 import arc.files.Fi;
 import arc.func.Boolc;
 import arc.func.Intc;
 import arc.graphics.g2d.Draw;
 import arc.graphics.g2d.TextureRegion;
 import arc.math.Mathf;
-import arc.util.OS;
-import arc.util.Reflect;
-import arc.util.Time;
-import arc.util.reflect.ClassReflection;
+import arc.util.*;
 import arc.video.FfMpeg;
 import arc.video.VideoPlayer;
 import arc.video.VideoPlayerCreator;
@@ -21,7 +17,6 @@ import mindustry.audio.SoundControl;
 import mindustry.game.EventType;
 import mindustry.graphics.MenuRenderer;
 import mindustry.mod.Mod;
-import arc.util.Log;
 
 import java.io.*;
 
@@ -56,6 +51,10 @@ public class MenuVideoMod extends Mod{
             try {
                 FfMpeg.setLibraryFilePath(Vars.mods.getMod(this.getClass()).file.path());
                 FfMpeg.loadLibraries();
+
+                AdvanceSharedLibraryLoader other = new AdvanceSharedLibraryLoader(Vars.mods.getMod(this.getClass()).file.path());
+                other.load("lwjgl"); //sdl
+                other.load(OS.isWindows ? OS.is64Bit ? "OpenAL" : "OpenAL32" : "openal");
             } catch (Exception e) {
                 Log.info("e.toString(): " + e);
                 Log.info("e.getMessage(): " + e.getMessage());
@@ -67,15 +66,7 @@ public class MenuVideoMod extends Mod{
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if (!videoPath.exists()) videoPath.mkdirs();
-            try {
-                Core.audio = (Audio) Class.forName("arc.backend.sdl.audio.OpenALSdlAudio", true, Vars.mods.mainLoader()).getConstructor().newInstance();
-            } catch(Exception ignored) {
-                try {
-                    Core.audio = (Audio) Class.forName("arc.backend.sdl.audio.OpenALSdl3Audio", true, Vars.mods.mainLoader()).getConstructor().newInstance();
-                } catch (Exception ex) {
-                    throw new RuntimeException("[MenuVideo] fail to get sdl audio.", ex);
-                }
-            }
+            Core.audio = new arc.backend.sdl.audio.OpenALSdlAudio();
             player = VideoPlayerCreator.createVideoPlayer();
             Vars.control.sound = new VideoSoundControl();
             player.setLooping(true);
