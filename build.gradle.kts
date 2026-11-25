@@ -59,12 +59,12 @@ dependencies{
         "libs/arc-video-${arcVideoVersion}.jar",
         "libs/arc-video-android-${arcVideoVersion}.jar",
         "libs/arc-video-desktop-${arcVideoVersion}.jar",
-        "libs/arc-video-sdl3-${arcVideoVersion}.jar",
+        "libs/arc-video-sdl-${arcVideoVersion}.jar",
     ))
     implementation("com.badlogicgames.jlayer:jlayer:1.0.1-gdx")
     implementation("org.jcraft:jorbis:0.0.17")
-    //implementation("org.lwjgl.lwjgl:lwjgl:2.9.3") //sdl
-    implementation("org.lwjgl:lwjgl-openal:3.4.2") //sdl3
+    implementation("org.lwjgl.lwjgl:lwjgl:2.9.3") //sdl
+    //implementation("org.lwjgl:lwjgl-openal:3.4.2") //sdl3
 }
 
 tasks.jar{
