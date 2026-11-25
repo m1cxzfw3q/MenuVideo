@@ -64,7 +64,9 @@ dependencies{
     implementation("com.badlogicgames.jlayer:jlayer:1.0.1-gdx")
     implementation("org.jcraft:jorbis:0.0.17")
     implementation("org.lwjgl.lwjgl:lwjgl:2.9.3") //sdl
-    //implementation("org.lwjgl:lwjgl-openal:3.4.2") //sdl3
+    
+    //compileOnly("org.lwjgl:lwjgl:3.4.2") //sdl3
+    //implementation("org.lwjgl:lwjgl-openal:3.4.2")
 }
 
 tasks.jar{
