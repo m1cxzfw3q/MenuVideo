@@ -53,8 +53,6 @@ public class MenuVideoMod extends Mod{
                 FfMpeg.loadLibraries();
 
                 AdvanceSharedLibraryLoader other = new AdvanceSharedLibraryLoader(Vars.mods.getMod(this.getClass()).file.path());
-                other.load("lwjgl"); //sdl
-                other.load(OS.isWindows ? OS.is64Bit ? "OpenAL" : "OpenAL32" : "openal");
             } catch (Exception e) {
                 Log.info("e.toString(): " + e);
                 Log.info("e.getMessage(): " + e.getMessage());
@@ -66,7 +64,7 @@ public class MenuVideoMod extends Mod{
     public MenuVideoMod() {
         Events.on(EventType.ClientLoadEvent.class, e -> {
             if (!videoPath.exists()) videoPath.mkdirs();
-            Core.audio = new arc.backend.sdl.audio.OpenALSdlAudio();
+            Core.audio = new arc.backend.sdl.audio.OpenALSdl3Audio();
             player = VideoPlayerCreator.createVideoPlayer();
             Vars.control.sound = new VideoSoundControl();
             player.setLooping(true);
